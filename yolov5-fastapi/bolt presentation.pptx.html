@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image API Example</title>
+  <style>
+    #preview {
+      max-width: 400px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image API Example</h1>
+  <input type="file" id="image-input" accept="image/*">
+  <br>
+  <button onclick="uploadImage()">Upload Image</button>
+  <br>
+  <img id="preview" src="#" alt="Preview">
+
+  <h2>Result:</h2>
+  <img id="result" src="#" alt="Result">
+
+  <script>
+    function uploadImage() {
+      var fileInput = document.getElementById('image-input');
+      var previewImg = document.getElementById('preview');
+      var resultImg = document.getElementById('result');
+
+      var file = fileInput.files[0];
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        previewImg.src = e.target.result;
+
+        var formData = new FormData();
+        formData.append('image', file);
+
+        fetch('API_ENDPOINT_URL', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.blob())
+        .then(blob => {
+          resultImg.src = URL.createObjectURL(blob);
+        })
+        .catch(error => console.error('Error:', error));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>
